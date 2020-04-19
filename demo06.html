@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function add(num1, num2, callback) {
+            console.log(num1 + num2);
+            callback && callback();
+        }
+        // 回调地狱！callback hell
+        add(1, 2, function () {
+            add(3, 4, function () {
+                add(5, 6, function () {
+                    add(7, 8, function () {
+                        console.log('够了！');
+                    });
+                });
+            });
+        });
+        /*
+          在以前的js开发时，类似上边两种回调地狱的场景经常碰到，这种代码结构混乱，不易维护，而且代码也不易扩展
+          所以说！ES6的Promise就是为了解决上边这种场景而生的一种语法！
+          Promise是一个对象，在实例化是传递一个回调函数的实参，在这个回调函数里又有两个参数，分别是
+          resolve和reject，那么通过实例化后的Promise对象的then()方法来调用触发resolve模块，catch()方法触发调用reject模块
+      */
+        console.log('=======================');
+        function cheng(num1, num2) {
+            var promise = new Promise((resolve, reject) => {
+                // 当前cheng这个函数的实际业务模块代码全部写在Promise对象里
+                var result = num1 * num2;
+                console.log(result);
+                if (result < 80) {
+                    // 根据条件判断，要想进一步触发回调，则执行resolve模块就ok了
+                    resolve('呵呵');
+                } else {
+                    // 如果不想再继续回调了，则根据条件判断触发执行reject模块即可
+                    reject();
+                }
+            });
+            return promise;
+        }
+        // then执行触发的就是resolve模块，then()方法里的参数其实就是resolve方法
+        cheng(1, 2)
+            .then((str) => {
+                console.log('第一次回调执行' + str);
+                // 在第一次函数执行完后，如果还需要再次回调调用时，则可以通过return将需要回调的函数再次执行即可
+                return cheng(3, 4);
+            })
+            .then(() => {
+                console.log('第二次回调执行');
+                return cheng(5, 6);
+            })
+            .then(() => {
+                console.log('第三次回调执行');
+                return cheng(7, 8);
+            })
+            .then(() => {
+                console.log('第四次回调执行');
+                return cheng(9, 10);
+            })
+            .then(() => {
+                console.log('第五次回调执行');
+                return cheng(11, 12);
+            })
+            .then(() => {
+                console.log('第六次回调执行');
+                return cheng(13, 14);
+            })
+            .catch(() => {
+                console.log('够了！');
+            });
+        // 基于上边的回调地狱场景，实际开发时，在使用ajax访问接口时也可能会出现类似情况
+        // function ajax(obj, callback) {
+        //     var result;
+        //     var xhr = new XMLHttpRequest();
+        //     xhr.open(obj.method, obj.url);
+        //     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        //     xhr.send();
+        //     xhr.onreadystatechange = function () {
+        //         if (xhr.readyState === 4 && xhr.status === 200) {
+        //             result = xhr.responseText;
+        //         }
+        //     }
+        //     /* 
+        //         json格式的字符串转json对象：JSON.parse();
+        //         json对象转json格式的字符串：JSON.stringify();
+        //      */
+        //     return result;
+        // }
+        // var result = ajax({ method: 'get', url: 'localhost:8888/getName' }, function () { 
+        //     // 一次请求完成之后，可能还需要拿刚请求完的结果做一些业务逻辑判断处理，紧跟着再发送一次新的请求
+        //     result = result && result;
+        //    if(!result){reject()}
+        //     var result1=ajax();
+        // });
+        function ajaxPromise() {
+            /* 
+                实际开发时，可能会从一个接口API拿到响应结果后，处理完结果，再拿这个结果去请求另外一个接口
+             */
+            return new Promise((resolve, reject) => {
+                var xhr = new XMLHttpRequest();
+                xhr.open('get', 'http://localhost:8888/data');
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send();
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        console.log(xhr.responseText);
+                        resolve(xhr.responseText);
+                    } else {
+                        reject();
+                    }
+                };
+            });
+        }
+        ajaxPromise()
+            .then(response => {
+                console.log('第一次回调：' + response);
+                return ajaxPromise();
+            })
+            .then(response => {
+                console.log('第二次回调' + response);
+                return ajaxPromise();
+            })
+            .catch(() => {
+                console.log('服务器挂了，打死后端！');
+            });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /*
+            在ES6里，提供了一种Generator函数，这种函数的特点就是在函数内部可以通过一个关键词yield可以让当前同步执行的代码暂停
+            执行，那么在调用Generator函数时，可以利用函数的next()方法来让被yield暂停的代码继续执行！
+        */
+        function* func1() {
+            console.log('呵呵');
+            // yield关键词只能在G函数里使用，其他函数中使用直接报错！
+            // yield的作用就是在调用函数时，碰到yield后，会暂停yield后边的代码执行
+            // 如果想让后续代码继续执行，则再进一步调用G对象的next()方法执行即可
+            yield;
+            console.log('嘻嘻');
+            yield;
+            console.log('哈哈');
+        }
+        // 当给一个function后边加上一个星号后，就把一个普通function改造成了Generator function了
+        // 这时，第一次调用Generator函数时，返回一个Generator对象
+        // 其实底层的本质就是，给普通函数外边包了一层Generator对象
+        var g = func1();
+        // console.log(g);
+        // 获取到Generator对象后，通过G对象的next()方法来调用函数的执行
+        g.next();
+        g.next();
+        g.next();
+        console.log('=========================================');
+        /* 
+            通过上边程序可以了解到yield的作用
+            但是yield不仅仅可以单独一行来暂停程序执行，也可以在赋值运算符做赋值操作时暂停程序执行
+        */
+        function* func2(num) {
+            console.log(num);
+            num = yield num + 10;
+            console.log(num);
+            return num;
+        }
+        var g1 = func2(5);
+        /* 
+            如果在赋值操作时使用yield，那么会从等号的右边开始暂停了程序的执行，
+            但是右边的表达式又会运行，再运行完后，因为碰到了yield，导致运行中断
+            当再次使用next()方法开启执行时，才开始执行=赋值运算符，可是程序已经找不到要操作赋值的变量了
+            因此因为这个断层导致后边变量直接undefined
+        */
+        /* 
+            解决上边问题就需要用到G对象next()方法来解决，next()方法有一个返回值，是一个对象
+            就是说，每次在调用next()时，都有一个返回值对象
+        */
+        /* 
+            通过获取到next返回值的结果，可以看到对象里有两个属性
+            value属性：其实就是从暂停开始上一次表达式计算的结果值
+            done属性：表示当前被暂停的程序是否执行完，判断当前程序的执行状态，false表示未执行完，true表示执行完了
+
+            当yield用在暂停赋值操作时，next()方法可以传递一个参数，这个参数的作用就是可以让从被暂停赋值的地方进一步
+            向下执行，将暂停前的值进一步继续传递！
+        */
+        var next1 = g1.next();
+        console.log(next1);
+        // 从被暂停地方开始，再次调用next()方法让程序继续执行，同时把上一次表达式计算的结果进一步传递执行
+        var next2 = g1.next(next1.value);
+        console.log(next2);
+        console.log('=========================================');
+        function* func3(num) {
+            console.log(num);
+            num = yield num + 5;
+            console.log(num);
+            var result = yield num + 20;
+            console.log(result);
+            console.log(num);
+            result = yield num + 100;
+            console.log(result);
+            return result;
+        }
+        var g2 = func3(5);
+        g2.next(1);
+        g2.next(10);
+        g2.next(30);
+        var next4 = g2.next(100);
+        console.log(next4);
+        /* 
+            总结：
+            在赋值操作时使用yield暂停程序执行的话
+            那么在本次使用next()开启程序执行时，是需要知道暂停地方传递给本次next()方法实参值决定的
+        */
+    </script>
+</body>
+
+</html>
