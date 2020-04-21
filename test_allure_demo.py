@@ -28,3 +28,30 @@ class TestEditPage():
     def test_2(self, login):
         '''用例描述：先登录，再去执行yyy'''
         print("yyy")
+@allure.feature("新增页面")
+class TestAddPage():
+    '''编辑页面'''
+
+    @allure.tag("这是一个xxx的用例标签")
+    def test_1(self, login):
+        '''用例描述：新增内容'''
+        step_1()
+        step_2()
+        print("xxx")
+
+
+    @allure.story("新增内容提交")
+    def test_2(self, login):
+        '''用例描述：新增提交'''
+        print("新增内容提交")
+
+    @allure.epic("史诗")
+    def test_3(self, login):
+        '''用例描述：新增提交'''
+        print("史诗")
+
+    @allure.attach("附加内容查看显示")
+    def test_3(self, login):
+        '''用例描述：新增提交'''
+        print("附加内容查看显示")
+
