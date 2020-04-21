@@ -50,8 +50,4 @@ class TestAddPage():
         '''用例描述：新增提交'''
         print("史诗")
 
-    @allure.attach("附加内容查看显示")
-    def test_3(self, login):
-        '''用例描述：新增提交'''
-        print("附加内容查看显示")
-
+   
