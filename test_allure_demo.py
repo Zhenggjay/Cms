@@ -30,6 +30,7 @@ class TestEditPage():
                "<font color='red'>验证结果:</br> </font>{}</br>" \
                "<font color='red'>验证信息:</br> </font>{}".format(self.request_param, self.result, self.verify_result,
                                                                self.verify_info)
+        allure.dynamic.description(desc)
     @allure.story("这是一个xxx的用例")
     def test_1(self, login):
         '''用例描述：先登录，再去执行xxx'''
