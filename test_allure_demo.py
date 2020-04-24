@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*
+#-- coding: UTF-8 --
 #@Time:2020/4/14 19:31
 #@Auther:GJ
 import allure
@@ -38,7 +38,7 @@ class TestEditPage():
         step_2()
         print("xxx")
 
-
+    @pytest.mark.weibo
     @allure.story("打开a页面")
     def test_2(self):
         '''用例描述：先登录，再去执行yyy'''
@@ -94,11 +94,12 @@ class TestAddPage():
     <td>60</td>
     </tr>
     """)
+    @pytest.mark.weibo
     def test_3(self, login):
         '''用例描述：新增提交'''
         print("史诗")
 
-
-
+if __name__ == '__main__':
+    pytest.main(['-s','-m','weibo','test_allure_demo.py'])
 
 
