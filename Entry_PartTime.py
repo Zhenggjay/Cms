@@ -1,7 +1,6 @@
 #转正申请申请
 import threading,requests,json,time,sys,re
 from datetime import datetime,timedelta
-from dateutil.relativedelta import relativedelta
 from urllib import parse
 headers = {'Content-Type': 'application/json;charset=UTF-8'}
 
